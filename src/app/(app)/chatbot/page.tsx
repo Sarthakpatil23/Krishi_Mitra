@@ -92,19 +92,19 @@ export default function ChatbotPage() {
 
   const handleFormSubmit = (formData: FormData) => {
     const question = formData.get('question') as string;
-    if (question.trim() || imagePreview) {
-      const userMessage: Message = { role: 'user', content: question };
-      if (imagePreview) {
-        userMessage.image = imagePreview;
-        formData.append('imageDataUri', imagePreview);
-      }
+    if (!question.trim() && !imagePreview) return;
 
-      setMessages((prev) => [...prev, userMessage]);
-      formAction(formData);
-      formRef.current?.reset();
-      setImagePreview(null);
-      if(fileInputRef.current) fileInputRef.current.value = '';
+    const userMessage: Message = { role: 'user', content: question };
+    if (imagePreview) {
+      userMessage.image = imagePreview;
+      formData.set('imageDataUri', imagePreview);
     }
+
+    setMessages((prev) => [...prev, userMessage]);
+    formAction(formData);
+    formRef.current?.reset();
+    setImagePreview(null);
+    if(fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
@@ -160,7 +160,7 @@ export default function ChatbotPage() {
                               className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
                               onClick={() => {
                                 setImagePreview(null);
-                                if(fileInputRef.current) fileInputRef.current.value = '';
+                                if(fileInput.current) fileInput.current.value = '';
                               }}
                             >
                               <X className="h-4 w-4" />
@@ -169,6 +169,7 @@ export default function ChatbotPage() {
                       )}
                       <div className="relative flex items-center">
                         <Input name="question" placeholder="Ask a farming question..." autoComplete="off" />
+                         <input name="imageDataUri" type="hidden" value={imagePreview || ''} />
                         <Button
                           type="button"
                           variant="ghost"
