@@ -19,6 +19,7 @@ const AnswerFarmingQuestionInputSchema = z.object({
     .describe(
       "An optional image of a plant, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+    language: z.string().optional().describe('The language for the AI to respond in (e.g., "en", "hi", "bn").'),
 });
 export type AnswerFarmingQuestionInput = z.infer<typeof AnswerFarmingQuestionInputSchema>;
 
@@ -37,9 +38,11 @@ const prompt = ai.definePrompt({
   output: {schema: AnswerFarmingQuestionOutputSchema},
   prompt: `You are a helpful AI chatbot expert in farming, crops, weather conditions, fertilizers, and best practices.
 
+  Respond in the language specified: {{{language}}}.
+
   Answer the following question to the best of your ability.
   {{#if imageDataUri}}
-  Use the attached image as the primary context for your answer.
+  If an image is provided, use it as the primary context for your answer.
   Image: {{media url=imageDataUri}}
   {{/if}}
 

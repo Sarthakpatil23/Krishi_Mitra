@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { Bot, Send, User, Sparkles, Paperclip, X, Upload } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useActionState, useFormStatus } from 'react-dom';
+import { Bot, Languages, Paperclip, Send, Sparkles, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 
 import { askQuestion } from './actions';
@@ -14,6 +14,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { users } from '@/lib/data';
 import { AgriConnectLogo } from '@/components/icons';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -25,6 +32,16 @@ const initialState = {
   answer: null,
   error: null,
 };
+
+const languages = [
+    { value: 'en', label: 'English' },
+    { value: 'hi', label: 'Hindi (हिन्दी)' },
+    { value: 'bn', label: 'Bengali (বাংলা)' },
+    { value: 'te', label: 'Telugu (తెలుగు)' },
+    { value: 'mr', label: 'Marathi (मराठी)' },
+    { value: 'ta', label: 'Tamil (தமிழ்)' },
+    { value: 'gu', label: 'Gujarati (ગુજરાતી)' },
+]
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -44,6 +61,7 @@ export default function ChatbotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [language, setLanguage] = useState('en');
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -140,6 +158,8 @@ export default function ChatbotPage() {
       userMessage.image = imagePreview;
       formData.set('imageDataUri', imagePreview);
     }
+    
+    formData.set('language', language);
 
     setMessages((prev) => [...prev, userMessage]);
     formAction(formData);
@@ -166,10 +186,25 @@ export default function ChatbotPage() {
                     <p className="text-lg font-semibold text-primary">Drop image here to upload</p>
                 </div>
             )}
-            <CardHeader className="text-center">
+            <CardHeader className="text-center flex-row justify-center items-center gap-4">
                 <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
                     <Bot /> AI Assistant
                 </CardTitle>
+                <div className="flex items-center gap-2">
+                    <Languages className="w-5 h-5 text-muted-foreground" />
+                    <Select value={language} onValueChange={setLanguage}>
+                        <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {languages.map((lang) => (
+                                <SelectItem key={lang.value} value={lang.value}>
+                                    {lang.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
@@ -206,6 +241,7 @@ export default function ChatbotPage() {
             </CardContent>
             <CardFooter>
                 <form ref={formRef} action={handleFormAction} className="flex w-full items-start space-x-2">
+                    <input type="hidden" name="language" value={language} />
                     <div className="flex-1">
                       {imagePreview && (
                         <div className="relative mb-2 w-fit">
@@ -231,7 +267,7 @@ export default function ChatbotPage() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-10"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={() => fileInput.current?.click()}
                         >
                           <Paperclip className="h-5 w-5" />
                         </Button>
