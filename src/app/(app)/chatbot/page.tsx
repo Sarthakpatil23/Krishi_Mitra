@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useFormStatus, useActionState } from 'react-dom';
+import { useEffect, useRef, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Bot, Send, User, Sparkles, Paperclip, X, Upload } from 'lucide-react';
 import Image from 'next/image';
 
@@ -131,7 +131,7 @@ export default function ChatbotPage() {
   };
 
 
-  const handleFormSubmit = (formData: FormData) => {
+  const handleFormAction = (formData: FormData) => {
     const question = formData.get('question') as string;
     if (!question.trim() && !imagePreview) return;
 
@@ -205,7 +205,7 @@ export default function ChatbotPage() {
                 </ScrollArea>
             </CardContent>
             <CardFooter>
-                <form ref={formRef} action={handleFormSubmit} className="flex w-full items-start space-x-2">
+                <form ref={formRef} action={handleFormAction} className="flex w-full items-start space-x-2">
                     <div className="flex-1">
                       {imagePreview && (
                         <div className="relative mb-2 w-fit">
