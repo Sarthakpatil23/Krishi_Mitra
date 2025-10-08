@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Bot, Send, User, Sparkles } from 'lucide-react';
 
 import { askQuestion } from './actions';
@@ -37,7 +37,7 @@ function SubmitButton() {
 }
 
 export default function ChatbotPage() {
-  const [state, formAction] = useFormState(askQuestion, initialState);
+  const [state, formAction] = useActionState(askQuestion, initialState);
   const [messages, setMessages] = useState<Message[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
