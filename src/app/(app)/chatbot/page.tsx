@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useActionState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Bot, Languages, Paperclip, Send, Sparkles, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -267,7 +267,7 @@ export default function ChatbotPage() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-10"
-                          onClick={() => fileInput.current?.click()}
+                          onClick={() => fileInputRef.current?.click()}
                         >
                           <Paperclip className="h-5 w-5" />
                         </Button>
@@ -287,3 +287,5 @@ export default function ChatbotPage() {
     </div>
   );
 }
+
+    
