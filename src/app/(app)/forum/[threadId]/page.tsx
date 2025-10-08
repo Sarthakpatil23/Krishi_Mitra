@@ -56,7 +56,7 @@ export default function ThreadPage({ params }: ThreadPageProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="whitespace-pre-wrap">{post.content}</p>
+          <p className="whitespace-pre-wrap leading-relaxed text-muted-foreground">{post.content}</p>
         </CardContent>
         <CardFooter>
           <div className="flex items-center gap-2">
@@ -89,11 +89,11 @@ export default function ThreadPage({ params }: ThreadPageProps) {
                     </div>
                     <span className="text-xs text-muted-foreground">{reply.createdAt}</span>
                 </div>
-                <p className="text-sm mt-1">{reply.content}</p>
+                <p className="text-sm mt-2 text-muted-foreground leading-relaxed">{reply.content}</p>
               </div>
             </CardHeader>
-             <CardFooter className="flex justify-end">
-                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+             <CardFooter className="flex justify-end pt-0">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2 text-muted-foreground">
                     <ThumbsUp className="h-4 w-4" />
                     <span>{reply.upvotes}</span>
                 </Button>
@@ -110,7 +110,7 @@ export default function ThreadPage({ params }: ThreadPageProps) {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-             <div className="flex items-center gap-4">
+             <div className="flex items-start gap-4">
                 <Avatar className="h-10 w-10">
                     <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
                     <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>

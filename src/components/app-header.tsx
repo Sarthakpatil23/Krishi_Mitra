@@ -52,32 +52,29 @@ export function AppHeader() {
   const isThreadPage = /^\/forum\/post-\d+$/.test(pathname);
   
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <SidebarTrigger className="sm:hidden" />
-      <div className="flex items-center gap-2">
-         <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/forum">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{getBreadcrumbTitle()}</BreadcrumbPage>
-              </BreadcrumbItem>
-              {isThreadPage && (
-                <>
-                 <BreadcrumbSeparator />
-                 <BreadcrumbItem>
-                    <BreadcrumbPage>Post Details</BreadcrumbPage>
-                 </BreadcrumbItem>
-                </>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
-          <h1 className="md:hidden text-lg font-semibold font-headline">{getBreadcrumbTitle()}</h1>
-      </div>
+       <Breadcrumb className="hidden md:flex">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/forum">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{getBreadcrumbTitle()}</BreadcrumbPage>
+            </BreadcrumbItem>
+            {isThreadPage && (
+              <>
+               <BreadcrumbSeparator />
+               <BreadcrumbItem>
+                  <BreadcrumbPage>Post Details</BreadcrumbPage>
+               </BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
       
       <div className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -88,28 +85,14 @@ export function AppHeader() {
         />
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="h-8 w-8">
-            <Languages className="h-4 w-4" />
-            <span className="sr-only">Change language</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>English</DropdownMenuItem>
-          <DropdownMenuItem>Español</DropdownMenuItem>
-          <DropdownMenuItem>Français</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-       <Button variant="outline" size="icon" className="h-8 w-8">
+       <Button variant="ghost" size="icon" className="h-8 w-8">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Toggle notifications</span>
        </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="overflow-hidden rounded-full h-8 w-8">
+          <Button variant="ghost" size="icon" className="overflow-hidden rounded-full h-8 w-8">
             <Avatar className='h-8 w-8'>
               <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
               <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
@@ -129,7 +112,7 @@ export function AppHeader() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/login">
+            <Link href="/">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Logout</span>
             </Link>

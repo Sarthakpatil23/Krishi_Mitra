@@ -2,11 +2,11 @@
 
 import {
   Bot,
-  Home,
   Library,
   LogOut,
   MessagesSquare,
   Settings,
+  User,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -19,12 +19,19 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Button } from './ui/button';
 import { AgriConnectLogo } from './icons';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { users } from '@/lib/data';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -35,7 +42,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex items-center gap-2">
           <AgriConnectLogo className="size-8 text-primary" />
-          <span className="text-xl font-semibold font-headline text-primary">
+          <span className="text-xl font-semibold font-headline text-primary-foreground">
             AgriConnect
           </span>
         </div>
@@ -45,7 +52,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              isActive={pathname === '/forum'}
+              isActive={pathname.startsWith('/forum')}
               tooltip="Forum"
             >
               <Link href="/forum">
@@ -81,21 +88,41 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-         <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
-            <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col text-sm overflow-hidden">
-            <span className="font-semibold truncate">{currentUser.name}</span>
-            <span className="text-muted-foreground -mt-0.5">{currentUser.role}</span>
-          </div>
-          <Button variant="ghost" size="icon" className="ml-auto" asChild>
-            <Link href="/login">
-                <LogOut className="size-4" />
-            </Link>
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="w-full justify-start text-left h-auto px-2 py-1.5">
+              <div className="flex items-center gap-3 w-full">
+                <Avatar className="size-8">
+                  <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+                  <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col text-sm overflow-hidden">
+                  <span className="font-semibold truncate">{currentUser.name}</span>
+                  <span className="text-muted-foreground -mt-0.5 text-xs">{currentUser.role}</span>
+                </div>
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" side="top" className="w-56 mb-2">
+            <DropdownMenuLabel>{currentUser.name}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/login">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );
