@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { Bot, Send, User, Sparkles, Paperclip, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useFormStatus, useActionState } from 'react-dom';
+import { Bot, Send, User, Sparkles, Paperclip, X, Upload } from 'lucide-react';
 import Image from 'next/image';
 
 import { askQuestion } from './actions';
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { users } from '@/lib/data';
 import { AgriConnectLogo } from '@/components/icons';
+import { cn } from '@/lib/utils';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -42,6 +43,7 @@ export default function ChatbotPage() {
   const [state, formAction] = useActionState(askQuestion, initialState);
   const [messages, setMessages] = useState<Message[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -90,6 +92,45 @@ export default function ChatbotPage() {
     }
   };
 
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+                if (fileInputRef.current) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInputRef.current.files = dataTransfer.files;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+  };
+
+
   const handleFormSubmit = (formData: FormData) => {
     const question = formData.get('question') as string;
     if (!question.trim() && !imagePreview) return;
@@ -109,7 +150,22 @@ export default function ChatbotPage() {
 
   return (
     <div className="flex justify-center items-start h-full py-4">
-        <Card className="w-full max-w-3xl h-[calc(100vh-10rem)] flex flex-col">
+        <Card 
+            className={cn(
+                "w-full max-w-3xl h-[calc(100vh-10rem)] flex flex-col relative transition-all",
+                isDragging && "border-primary border-2 border-dashed"
+            )}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+        >
+            {isDragging && (
+                <div className="absolute inset-0 z-10 bg-primary/20 flex flex-col items-center justify-center gap-4">
+                    <Upload className="size-16 text-primary" />
+                    <p className="text-lg font-semibold text-primary">Drop image here to upload</p>
+                </div>
+            )}
             <CardHeader className="text-center">
                 <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
                     <Bot /> AI Assistant
@@ -160,7 +216,7 @@ export default function ChatbotPage() {
                               className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
                               onClick={() => {
                                 setImagePreview(null);
-                                if(fileInput.current) fileInput.current.value = '';
+                                if(fileInputRef.current) fileInputRef.current.value = '';
                               }}
                             >
                               <X className="h-4 w-4" />
@@ -168,7 +224,7 @@ export default function ChatbotPage() {
                         </div>
                       )}
                       <div className="relative flex items-center">
-                        <Input name="question" placeholder="Ask a farming question..." autoComplete="off" />
+                        <Input name="question" placeholder="Ask a farming question or drag an image here..." autoComplete="off" />
                          <input name="imageDataUri" type="hidden" value={imagePreview || ''} />
                         <Button
                           type="button"
