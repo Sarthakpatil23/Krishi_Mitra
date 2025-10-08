@@ -5,11 +5,13 @@ import { z } from 'zod';
 
 const schema = z.object({
   question: z.string().min(1, { message: 'Question cannot be empty.' }),
+  imageDataUri: z.string().optional(),
 });
 
 export async function askQuestion(prevState: any, formData: FormData) {
   const validatedFields = schema.safeParse({
     question: formData.get('question'),
+    imageDataUri: formData.get('imageDataUri'),
   });
 
   if (!validatedFields.success) {
@@ -19,7 +21,10 @@ export async function askQuestion(prevState: any, formData: FormData) {
   }
 
   try {
-    const result = await answerFarmingQuestion({ question: validatedFields.data.question });
+    const result = await answerFarmingQuestion({
+      question: validatedFields.data.question,
+      imageDataUri: validatedFields.data.imageDataUri,
+    });
     return { answer: result.answer };
   } catch (error) {
     return {
