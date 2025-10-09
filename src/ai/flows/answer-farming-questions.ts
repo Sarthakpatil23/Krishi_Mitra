@@ -38,11 +38,11 @@ const prompt = ai.definePrompt({
   output: {schema: AnswerFarmingQuestionOutputSchema},
   prompt: `You are a helpful AI chatbot expert in farming, crops, weather conditions, fertilizers, and best practices.
 
-  Respond in the language specified: {{{language}}}.
+  Your response must be in the language specified: {{{language}}}.
 
   Answer the following question to the best of your ability.
   {{#if imageDataUri}}
-  If an image is provided, use it as the primary context for your answer.
+  Use the provided image as the primary context for your answer.
   Image: {{media url=imageDataUri}}
   {{/if}}
 
